@@ -20,7 +20,7 @@ test('login & logout', async () => {
   expect(loginRes.body.user).toMatchObject(user);
   expect(password).toBeTruthy();
 
-  const logoutRes = await request(app).delete('/api/auth').send(testUser);
+  const logoutRes = await request(app).delete('/api/auth').send(loginRes.body.token);
   expect(logoutRes.status).toBe(200);
   expect(logoutRes.message).toMatch("logout successful")
 
