@@ -36,3 +36,9 @@ test('get menu', async () => {
     getRes.body.forEach((item) => titles.push(item.title));
     expect(titles.includes(testMenuItem.title)).toBeTruthy();
 });
+
+test('get order', async () => {
+        const getRes = await request(app).get('/api/order').set('Authorization', 'Bearer ' + testUserAuthToken);
+        expect(getRes.status).toBe(200);
+        expect(getRes.body.dinerId).toBeTruthy();
+});
