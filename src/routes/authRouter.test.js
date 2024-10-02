@@ -11,10 +11,15 @@ beforeAll(async () => {
   expect(testUserAuthToken).toBeTruthy();
 });
 
+beforeEach(async () => {
+  await request(app).delete('/api/auth').set('Authorization', 'Bearer ' + testUserAuthToken);
+});
+
 test('login', async () => {
   const loginRes = await request(app).put('/api/auth').send(testUser);
   expect(loginRes.status).toBe(200);
   expect(loginRes.body.token).toMatch(/^[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*$/);
+  testUserAuthToken = loginRes.body.token;
 
   const { password, ...user } = { ...testUser, roles: [{ role: 'diner' }] };
   expect(loginRes.body.user).toMatchObject(user);
@@ -26,7 +31,7 @@ test('register', async () => {
   expect(registerRes.status).toBe(200);
   expect(registerRes.body.token).toMatch(/^[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*$/);
   testUserAuthToken = registerRes.body.token;
-      
+
   const { password, ...user } = { ...testUser, roles: [{ role: 'diner' }] };
   expect(registerRes.body.user).toMatchObject(user);
   expect(password).toBeTruthy();
@@ -35,12 +40,11 @@ test('register', async () => {
 test('update', async () => {
   const loginRes = await request(app).put('/api/auth').send(testUser);
   testUserAuthToken = loginRes.body.token;
-      
-  const newEmailString = 'fake@gmail.com';
+
+  const newEmailString = 'fakeEmail@gmail.com';
   const newUser = { email: newEmailString, password: 'fakepassword' };
   const updateRes = await request(app).put(`/api/auth/${loginRes.body.user.id}`).set('Authorization', 'Bearer ' + testUserAuthToken).set('Content-Type', 'application/json').send(newUser);
   expect(updateRes.status).toBe(200);
-      
+
   expect(updateRes.body.email).toBe(newEmailString);
 })
-
