@@ -19,6 +19,8 @@ beforeAll(async () => {
     expect(loginRes.status).toBe(200);
     
     testUserAuthToken = loginRes.body.token;
+    testFranchise.name = Math.random().toString(36).substring(2, 12);
+    testFranchise.admins[0].email = addResult.email;
     
 });
 
