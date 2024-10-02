@@ -24,17 +24,17 @@ beforeAll(async () => {
 test('add item', async () => {
         const addRes = await request(app).put('/api/order/menu').set('Content-Type', 'application/json').set('Authorization', 'Bearer ' + testUserAuthToken).send(testMenuItem);
         expect(addRes.status).toBe(200);
-        const titles = [];
-        addRes.body.forEach((item) => titles.push(item.title));
-        expect(titles.includes(testMenuItem.title)).toBeTruthy();
+        const menu = [];
+        addRes.body.forEach((item) => menu.push(item.title));
+        expect(menu.includes(testMenuItem.title)).toBeTruthy();
     });
 
 test('get menu', async () => {
     const getRes = await request(app).get('/api/order/menu');
     expect(getRes.status).toBe(200);
-    const titles = [];
-    getRes.body.forEach((item) => titles.push(item.title));
-    expect(titles.includes(testMenuItem.title)).toBeTruthy();
+    const menu = [];
+    getRes.body.forEach((item) => menu.push(item.title));
+    expect(menu.includes(testMenuItem.title)).toBeTruthy();
 });
 
 test('get order', async () => {

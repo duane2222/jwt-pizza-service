@@ -12,6 +12,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  //logout testuser
   await request(app).delete('/api/auth').set('Authorization', 'Bearer ' + testUserAuthToken);
 });
 
