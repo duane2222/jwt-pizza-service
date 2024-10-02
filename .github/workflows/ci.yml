@@ -18,7 +18,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: tempdbpassword
           MYSQL_DATABASE: pizza
         ports:
-          - "3307:3307"
+          - "3306:3306"
         options: >-
           --health-cmd "mysqladmin ping -ptempdbpassword"
           --health-interval 10s
