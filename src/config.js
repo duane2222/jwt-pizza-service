@@ -4,7 +4,7 @@ module.exports = {
     connection: {
       host: '127.0.0.1',
       user: 'root',
-      password: 'tempdbpassword',
+      password: 'qwerty123',
       database: 'pizza',
       connectTimeout: 60000,
     },
