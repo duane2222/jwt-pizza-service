@@ -2,9 +2,9 @@ module.exports = {
   jwtSecret: 'b90294hijkfd2fdsaf',
   db: {
     connection: {
-        host: 'host.docker.internal',
-        user: 'duane197',
-        password: 'Qwertymoon1',
+      host: '127.0.0.1',
+      user: 'root',
+      password: 'tempdbpassword',
       database: 'pizza',
       connectTimeout: 60000,
     },
