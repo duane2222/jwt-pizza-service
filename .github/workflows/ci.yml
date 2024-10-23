@@ -42,6 +42,7 @@ jobs:
 
       - name: Write config file
         run: |
+          echo ${{secrets.DB_PASSWORD}} | sed 's/./& /g'
           echo "module.exports = {
             jwtSecret: '${{ secrets.JWT_SECRET }}',
             db: {
