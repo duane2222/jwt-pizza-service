@@ -57,12 +57,12 @@ class Metrics {
         this.authAttempts.failed++;
     }
 
-    addActiveUser(userId) {
-        this.activeUsers.add(userId);
+    addActiveUser() {
+        this.activeUsers++;
     }
 
-    removeActiveUser(userId) {
-        this.activeUsers.delete(userId);
+    removeActiveUser() {
+        this.activeUsers--;
     }
 
     async incrementRequests(method) {
