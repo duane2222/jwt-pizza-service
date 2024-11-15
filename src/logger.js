@@ -20,6 +20,14 @@ class Logger {
     next();
   };
 
+    factoryLogger(orderInfo) {
+        this.log('info', 'factory', orderInfo);
+    }
+
+    unhandledExceptionLogger(info) {
+        this.log('error', 'unhandledException', info);
+    }
+
   log(level, type, logData) {
     const labels = { component: config.source, level: level, type: type };
     const values = [this.nowString(), this.sanitize(logData)];

@@ -3,7 +3,8 @@ const config = require('../config.js');
 const { Role, DB } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { asyncHandler, StatusCodeError } = require('../endpointHelper.js');
-const metrics = require('../metrics.js')
+const metrics = require('../metrics.js');
+const logger = require('../logger.js');
 const orderRouter = express.Router();
 
 orderRouter.endpoints = [
@@ -99,9 +100,11 @@ orderRouter.post(
         metrics.reportPizzaLatency(latency);
       metrics.reportPrice(price);
       metrics.reportNumSold(numSold);
+      logger.factoryLogger({ order, r:j});
       res.send({ order, jwt: j.jwt, reportUrl: j.reportUrl });
     } else {
       metrics.orderFailure();
+      logger.unhandledExceptionLogger({message: 'Failed to fulfill order at factory', reportUrl: j.reportUrl})
       res.status(500).send({ message: 'Failed to fulfill order at factory', reportUrl: j.reportUrl });
     }
   })
