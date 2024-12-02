@@ -49,7 +49,7 @@ async function setAuthUser(req, res, next) {
         req.user.isRole = (role) => !!req.user.roles.find((r) => r.role === role);
       }
     } catch {
-      metrics.trackAuthAttempts(false);
+      metrics.authFailure();
       req.user = null;
     }
   }
