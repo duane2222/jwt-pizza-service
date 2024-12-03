@@ -45,7 +45,9 @@ orderRouter.endpoints = [
 orderRouter.get(
   '/menu',
   asyncHandler(async (req, res) => {
+        const start = Date.now();
         metrics.incrementRequests("GET");
+        metrics.updateRequestLatency(Date.now() - start);
     res.send(await DB.getMenu());
   })
 );
@@ -55,6 +57,7 @@ orderRouter.put(
   '/menu',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+        const start = Date.now();
         metrics.incrementRequests("PUT");
     if (!req.user.isRole(Role.Admin)) {
       throw new StatusCodeError('unable to add menu item', 403);
@@ -62,6 +65,7 @@ orderRouter.put(
 
     const addMenuItemReq = req.body;
     await DB.addMenuItem(addMenuItemReq);
+    metrics.updateRequestLatency(Date.now() - start);
     res.send(await DB.getMenu());
   })
 );
@@ -71,7 +75,9 @@ orderRouter.get(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+        const start = Date.now();
         metrics.incrementRequests("GET");
+        metrics.updateRequestLatency(Date.now() - start);
     res.json(await DB.getOrders(req.user, req.query.page));
   })
 );
@@ -81,6 +87,7 @@ orderRouter.post(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+        const start = Date.now();
         metrics.incrementRequests("POST");
     const orderReq = req.body;
     const order = await DB.addDinerOrder(req.user, orderReq);
@@ -101,10 +108,12 @@ orderRouter.post(
       metrics.reportPrice(price);
       metrics.reportNumSold(numSold);
       logger.factoryLogger({ order, r:j});
+      metrics.updateRequestLatency(Date.now() - start);
       res.send({ order, jwt: j.jwt, reportUrl: j.reportUrl });
     } else {
       metrics.orderFailure();
       logger.unhandledExceptionLogger({message: 'Failed to fulfill order at factory', reportUrl: j.reportUrl})
+      metrics.updateRequestLatency(Date.now() - start);
       res.status(500).send({ message: 'Failed to fulfill order at factory', reportUrl: j.reportUrl });
     }
   })

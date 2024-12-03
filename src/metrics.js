@@ -21,7 +21,7 @@ class Metrics {
             failed: 0,
         };
         this.activeUsers = 0;
-        this.requestLatency = 0;
+        this.requestLatency = [];
     }
 
     sendMetricsPeriodically (rate) {
@@ -44,7 +44,8 @@ class Metrics {
             this.sendMetrics('httpMetric', 'post', this.methods.POST);
             this.sendMetrics('httpMetric', 'delete', this.methods.DELETE);
             this.sendMetrics('httpMetric', 'put', this.methods.PUT);
-            this.sendMetrics('httpMetric', 'request_latency', this.requestLatency);
+            this.sendMetrics('httpMetric', 'request_latency', this.average(this.requestLatency));
+            this.requestLatency = [];
         }, rate).unref()
     }
 
@@ -66,21 +67,16 @@ class Metrics {
     }
 
     async incrementRequests(method) {
-        const startTime = Date.now();
         this.totalRequests++;
         if (this.methods[method] !== undefined) {
             this.methods[method]++;
         }
-        
-        const endTime = Date.now();
-        const latency = endTime - startTime;
-        this.setRequestLatency(latency); 
     }
 
+    updateRequestLatency(newLatency) {
+        this.requestLatency.push(newLatency);
+      }
 
-    setRequestLatency(latency) {
-        this.requestLatency = latency;
-    }
 
     orderFailure() {
         this.pizzaData.creationFailures++
@@ -102,6 +98,13 @@ class Metrics {
         const cpuUsage = os.loadavg()[0] / os.cpus().length;
         return cpuUsage.toFixed(2) * 100;
     }
+
+    average(array) {
+        if (array.length == 0) {
+          return null;
+        }
+        return array.reduce((a, b) => a + b) / array.length;
+      }
 
     getMemoryUsagePercentage() {
         const totalMemory = os.totalmem();
